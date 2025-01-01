@@ -1,51 +1,71 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "tipovi.h"
 #include <iostream>
-#include <vector>
 #include <stack>
+#include <vector>
 
 using namespace std;
 
 struct Node {
-    string tip;
+    string nodeName;
     int line;
     string value;
+    Tip tip;
+    Tip ntip; // Ili NTip (nez jos)
+    int brElem;
+    bool lIzraz;
+    vector<Tip> tipovi;
+    vector<string> imena;
 
     vector<Node*> childrenNodes;
-    Node(string nodeName)
+    Node(string value)
     {
-        int spaceIndex = nodeName.find_first_of(' ');
+        int spaceIndex = value.find_first_of(' ');
         // Nije naso niti jedan razmak znaci da je cvor, a ne list
-        if(spaceIndex == -1){
-            tip = nodeName;
-            line = -1;
+        if (spaceIndex == -1) {
+            this->nodeName = value;
+            line = -1; // Oznacava cvor
             return;
         }
 
-        tip = nodeName.substr(0, spaceIndex);
-        nodeName = nodeName.substr(spaceIndex+1);
+        this->nodeName = value.substr(0, spaceIndex);
+        value = value.substr(spaceIndex + 1);
 
-        spaceIndex = nodeName.find_first_of(' ');
+        spaceIndex = value.find_first_of(' ');
 
-        string lineString = nodeName.substr(0, spaceIndex);
+        string lineString = value.substr(0, spaceIndex);
         line = atoi(lineString.c_str());
-        nodeName = nodeName.substr(spaceIndex+1);
+        value = value.substr(spaceIndex + 1);
 
-        value = nodeName;
+        value = value;
     }
 };
 
 class Tree {
 private:
     Node* root;
-    stack<pair<Node*, int>> dfsStack; // int je za indeks cvora
+    Node* currentNode;
+    stack<Node*> dfsStack; // int je za indeks cvora
+    // stack<pair<Node*, int>> dfsStack;
     void recPrint(Node* parentNode, int depth);
 
 public:
     Tree();
+
+    // Vraca korijen/prvi cvor
     Node* getRoot();
+
+    // Vraca sljedeci cvor po redu
     Node* next();
+
+    // Vraca trenutni cvor
+    Node* get();
+
+    // Vraca sljedeci cvor, ali ne prelazi na njega
+    Node* peek();
+
     void print();
 };
 
